@@ -301,14 +301,14 @@ func _draw_goal() -> void:
 func _draw_water() -> void:
 	var x := 0
 	while x < columns:
-		if _effective_volume(x) <= render_volume_threshold:
+		if not _should_render_column(x):
 			x += 1
 			continue
 
 		var start_x := x
 		var top_samples := PackedFloat32Array()
 		var bottom_samples := PackedFloat32Array()
-		while x < columns and _effective_volume(x) > render_volume_threshold:
+		while x < columns and _should_render_column(x):
 			if x > start_x and not _should_continue_surface_region(x - 1, x):
 				break
 			top_samples.append(_effective_surface_y(x))
@@ -700,6 +700,22 @@ func _top_diggable_cell(column_x: int) -> int:
 
 func _column_is_open(column_x: int) -> bool:
 	return column_x >= 0 and column_x < columns and column_capacity[column_x] > 0.0
+
+
+func _should_render_column(column_x: int) -> bool:
+	if not _column_is_open(column_x):
+		return false
+	if _effective_volume(column_x) > render_volume_threshold:
+		return true
+	return _column_has_adjacent_spill(column_x)
+
+
+func _column_has_adjacent_spill(column_x: int) -> bool:
+	if column_x > 0 and edge_spill_flow[column_x - 1] > MIN_VOLUME:
+		return true
+	if column_x < edge_spill_flow.size() and edge_spill_flow[column_x] > MIN_VOLUME:
+		return true
+	return false
 
 
 func _effective_volume(column_x: int) -> float:
