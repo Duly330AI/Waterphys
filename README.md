@@ -25,3 +25,4 @@ Prototype / playable experiment. Not a finished game.
 
 - Godot
 - GDScript
+<img width="1154" height="789" alt="Screenshot 2026-04-19 083007" src="https://github.com/user-attachments/assets/b47cbfbd-0e93-47a9-9cb3-2dd0df291a70" />
